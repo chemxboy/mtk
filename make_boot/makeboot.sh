@@ -40,9 +40,9 @@ echo "Mounting disk image..."
 hdiutil attach "${DMG_FILE}" -mountpoint "${TMP_MOUNT_POINT_PATH}"
 
 echo "Preparing disk image..."
-mdutil -i off "${TMP_MOUNT_POINT_PATH}"
-mdutil -E "${TMP_MOUNT_POINT_PATH}"
-mkdir -p "${TMP_MOUNT_POINT_PATH}/Library/Caches"
+mdutil -i off "${TMP_MOUNT_POINT_PATH}" > /dev/null 2>&1
+mdutil -E "${TMP_MOUNT_POINT_PATH}" > /dev/null 2>&1
+mkdir -p "${TMP_MOUNT_POINT_PATH}"/Library/Caches
 defaults write "${TMP_MOUNT_POINT_PATH}"/.Spotlight-V100/_IndexPolicy Policy -int 3
 
 echo "Cloning system (this will take a while)..."

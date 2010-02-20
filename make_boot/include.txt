@@ -85,6 +85,8 @@ usr/share/sandbox
 usr/share/terminfo
 usr/share/zoneinfo
 
+usr/standalone/i386
+
 bin
 etc
 private
