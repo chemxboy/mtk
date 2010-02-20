@@ -19,7 +19,7 @@ fi
 RSYNC_VERSION=$(rsync --version | head -n 1 | cut -d ' ' -f 8)
 
 if [[ $RSYNC_VERSION -lt 30 ]]; then
-  echo "Sorry, but your rsync is too old. You can get the latest from http://github.com/filipp/mtk" 2>&1
+  echo "Sorry, but your rsync is too old" 2>&1
   exit 1
 fi
 
@@ -44,21 +44,30 @@ mdutil -i off "${TMP_MOUNT_POINT_PATH}"
 mdutil -E "${TMP_MOUNT_POINT_PATH}"
 defaults write "${TMP_MOUNT_POINT_PATH}"/.Spotlight-V100/_IndexPolicy Policy -int 3
 
-mkdir "${TMP_MOUNT_POINT_PATH}/Library/Caches"
+mkdir -p "${TMP_MOUNT_POINT_PATH}/Library/Caches"
 
 echo "Cloning system (this will take a while)..."
 /usr/local/bin/rsync\
-  --protect-args --fileflags --force-change -aNHAXxrP\
+  --protect-args --fileflags --force-change -avhNHAXxr\
   --files-from=./include.txt --exclude-from=./exclude.txt\
-  "${SOURCE}" ${TMP_MOUNT_POINT_PATH}
+  "${SOURCE}" $TMP_MOUNT_POINT_PATH
 
 echo "Doing boot things..."
-ditto /mach_kernel "${TMP_MOUNT_POINT_PATH}"/mach_kernel
-ln -s "${TMP_MOUNT_POINT_PATH}"/mach_kernel "${TMP_MOUNT_POINT_PATH}"/mach
-kextcache -l -m "${TMP_MOUNT_POINT_PATH}"/System/Library/Extensions.mkext "${SOURCE}"/System/Library/Extensions
-bless --folder "${TMP_MOUNT_POINT_PATH}"/System/Library/CoreServices --label "${VOL_NAME}" --botinfo --bootefi --verbose
 
+kextcache -l -m "${TMP_MOUNT_POINT_PATH}"/System/Library/Extensions.mkext\
+  "${SOURCE}"/System/Library/Extensions
+
+bless --folder "${TMP_MOUNT_POINT_PATH}"/System/Library/CoreServices\
+  --label "${VOL_NAME}" --bootinfo --bootefi --verbose
+
+echo "Removing non-English localisations..."
+find "${TMP_MOUNT_POINT_PATH}"/Applications\
+  "${TMP_MOUNT_POINT_PATH}"/System/Library/Frameworks\
+  -type d -name '*.lproj' ! -iname 'en*' -delete
+
+#chflags hidden "${TMP_MOUNT_POINT_PATH}"/mach_kernel
 #kextcache -a i386 -s -l -n -z -m /tmp/macnbi-i386/mach.macosx.mkext /System/Library/Extensions
 
-rm -r "${TMP_MOUNT_POINT_PATH}"
 diskutil eject "${TMP_MOUNT_POINT_PATH}"
+rm -r "${TMP_MOUNT_POINT_PATH}"
+open .

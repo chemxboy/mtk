@@ -1,34 +1,24 @@
-private/var/vm/sleepimage
-private/var/logs/*
-usr/X11/*
-usr/standalone/bootcaches.plist
+private/var/vm/*
+private/var/log/*
 
 System/Library/Extensions.mkext
 System/Library/Extensions/IO80211Family.kext
 
 System/Library/Caches/*
 
-System/Library/Core Services/Setup Assistant.app
-System/Library/Core Services/RawCamera.bundle
-System/Library/Core Services/Server Assistant.app
-System/Library/Core Services/Front Row.app
+System/Library/CoreServices/Setup Assistant.app
+System/Library/CoreServices/RawCamera.bundle
+System/Library/CoreServices/Server Assistant.app
+System/Library/CoreServices/Front Row.app
 
-System/Library/Frameworks/JavaVM.framework
-System/Library/Frameworks/JavaFrameEmbedding.framework
-System/Library/Frameworks/CoreWLAN.framework
-System/Library/Frameworks/XgridFoundation.framework
-System/Library/Frameworks/Ruby.framework
-System/Library/Frameworks/Python.framework
+private/var/db/RemoteManagement
+private/var/db/locate.database
+private/var/db/receipts
+private/var/db/BootCache.playlist
+private/var/db/volinfo.database
 
-System/Library/PrivateFrameworks/iLifeSlideshow.framework
-System/Library/PrivateFrameworks/iLifeMediaBrowser.framework
-System/Library/PrivateFrameworks/MobileDevice.framework
-System/Library/PrivateFrameworks/Apple80211.framework
-System/Library/PrivateFrameworks/CoreChineseEngine.framework
-System/Library/PrivateFrameworks/VideoConference.framework
-System/Library/PrivateFrameworks/OfficeImport.framework
-System/Library/PrivateFrameworks/GeoKit.framework
-System/Library/PrivateFrameworks/ExchangeWebServices.framework
-System/Library/PrivateFrameworks/BackRow.framework
-System/Library/PrivateFrameworks/Helium.framework
-System/Library/PrivateFrameworks/LiveType.framework
+private/var/folders
+private/var/db/dyld
+private/var/root/.Spotlight-V100
+private/var/run/*
+private/tmp/*
