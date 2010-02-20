@@ -1,0 +1,43 @@
+Applications/TextEdit.app
+Applications/System Preferences.app
+Applications/Safari.app
+Applications/Preview.app
+Applications/Utilities/Activity Monitor.app
+Applications/Utilities/Console.app
+Applications/Utilities/Disk Utility.app
+Applications/Utilities/System Profiler.app
+Applications/Utilities/Terminal.app
+Applications/Utilities/Network Utility.app
+
+Library/ColorSync
+Library/Preferences
+
+System/Library/Caches
+System/Library/Components
+System/Library/CoreServices
+System/Library/DirectoryServices
+System/Library/ColorSync
+System/Library/Displays
+System/Library/Extensions
+System/Library/Filesystems
+System/Library/Fonts
+System/Library/Frameworks
+System/Library/KerberosPlugins
+System/Library/LaunchDaemons
+System/Library/LoginPlugins
+System/Library/OpenSSL
+System/Library/PreferencePanes/StartupDisk.prefPane
+System/Library/PreferencePanes/Network.prefPane
+System/Library/PrivateFrameworks
+System/Library/Sandbox
+System/Library/ScriptingDefinitions
+System/Library/Sounds
+System/Library/SystemConfiguration
+System/Library/SystemProfiler
+
+bin
+etc
+private
+sbin
+tmp
+usr

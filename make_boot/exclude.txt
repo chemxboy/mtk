@@ -1,0 +1,3 @@
+private/var/vm/sleepimage
+private/var/logs/*
+usr/X11/*
