@@ -20,7 +20,6 @@ System/Library/ColorSync
 System/Library/Displays
 System/Library/Extensions
 System/Library/Filesystems
-System/Library/Fonts
 System/Library/Frameworks
 System/Library/KerberosPlugins
 System/Library/LaunchDaemons
@@ -34,6 +33,12 @@ System/Library/ScriptingDefinitions
 System/Library/Sounds
 System/Library/SystemConfiguration
 System/Library/SystemProfiler
+
+System/Library/Fonts/LastResort.ttf
+System/Library/Fonts/Helvetica.dfont
+System/Library/Fonts/Menlo.ttc
+System/Library/Fonts/LucidaGrande.ttc
+System/Library/Fonts/Apple Symbols.ttf
 
 bin
 etc

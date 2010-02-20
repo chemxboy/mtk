@@ -16,11 +16,22 @@ fi
 
 RSYNC_VERSION=$1
 mkdir /tmp/build_rsync > /dev/null 2>&1
+
 cd /tmp/build_rsync
 
+MIRROR="http://rsync.samba.org/ftp/rsync"
+
 echo "Downloading rsync..."
-curl --progress -O http://rsync.samba.org/ftp/rsync/rsync-${RSYNC_VERSION}.tar.gz > /dev/null 2>&1
-curl --progress -O http://rsync.samba.org/ftp/rsync/rsync-patches-${RSYNC_VERSION}.tar.gz > /dev/null 2>&1
+curl --progress -O ${MIRROR}/rsync-${RSYNC_VERSION}.tar.gz > /dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+  echo "Failed to download rsync" 2>&1
+  exit 1
+fi
+curl --progress -O ${MIRROR}/rsync-patches-${RSYNC_VERSION}.tar.gz > /dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+  echo "Failed to download rsync-patches" 2>&1
+  exit 1
+fi
 
 echo "Extracting rsync..."
 tar -zxvf rsync-${RSYNC_VERSION}.tar.gz
