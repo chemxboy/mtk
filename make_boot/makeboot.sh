@@ -25,14 +25,14 @@ fi
 
 SOURCE=$1
 VOL_NAME=NetBoot
-TMP_MOUNT_POINT_PATH=/tmp/MakeBoot
+TMP_MOUNT_POINT_PATH=/tmp/NetBoot
 mkdir $TMP_MOUNT_POINT_PATH
 DMG_FILE=./boot.sparseimage
 
 echo "Creating disk image..."
 hdiutil create "${DMG_FILE}" -volname "${VOL_NAME}"\
 	-size 5G -type SPARSE -fs HFS+ -stretch 10G\
-	-uid 0 -gid 80 -mode 775 -layout NONE 2>&1
+	-uid 0 -gid 80 -mode 775 -layout NONE -ov 2>&1
 
 chmod 777 "${DMG_FILE}"
 
@@ -42,13 +42,12 @@ hdiutil attach "${DMG_FILE}" -mountpoint "${TMP_MOUNT_POINT_PATH}"
 echo "Preparing disk image..."
 mdutil -i off "${TMP_MOUNT_POINT_PATH}"
 mdutil -E "${TMP_MOUNT_POINT_PATH}"
-defaults write "${TMP_MOUNT_POINT_PATH}"/.Spotlight-V100/_IndexPolicy Policy -int 3
-
 mkdir -p "${TMP_MOUNT_POINT_PATH}/Library/Caches"
+defaults write "${TMP_MOUNT_POINT_PATH}"/.Spotlight-V100/_IndexPolicy Policy -int 3
 
 echo "Cloning system (this will take a while)..."
 /usr/local/bin/rsync\
-  --protect-args --fileflags --force-change -avhNHAXxr\
+  --protect-args --fileflags --force-change -ahNHAXxr\
   --files-from=./include.txt --exclude-from=./exclude.txt\
   "${SOURCE}" $TMP_MOUNT_POINT_PATH
 
@@ -64,9 +63,6 @@ echo "Removing non-English localisations..."
 find "${TMP_MOUNT_POINT_PATH}"/Applications\
   "${TMP_MOUNT_POINT_PATH}"/System/Library/Frameworks\
   -type d -name '*.lproj' ! -iname 'en*' -delete
-
-#chflags hidden "${TMP_MOUNT_POINT_PATH}"/mach_kernel
-#kextcache -a i386 -s -l -n -z -m /tmp/macnbi-i386/mach.macosx.mkext /System/Library/Extensions
 
 diskutil eject "${TMP_MOUNT_POINT_PATH}"
 rm -r "${TMP_MOUNT_POINT_PATH}"

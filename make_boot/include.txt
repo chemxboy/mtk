@@ -17,6 +17,7 @@ Library/Preferences
 System/Library/Caches
 System/Library/Components
 
+System/Library/CoreServices/Finder.app
 System/Library/CoreServices/CoreTypes.bundle
 System/Library/CoreServices/KernelEventAgent.bundle
 System/Library/CoreServices/RemoteManagement
@@ -76,7 +77,10 @@ usr/lib/samba
 usr/lib/sasl2
 
 usr/bin
-usr/sbin
+usr/sbin/installer
+usr/sbin/iostat
+usr/sbin/ipconfig
+
 usr/share/sandbox
 usr/share/terminfo
 usr/share/zoneinfo
