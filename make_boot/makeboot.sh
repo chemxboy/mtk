@@ -32,12 +32,12 @@ DMG_FILE=./boot.sparseimage
 echo "Creating disk image..."
 hdiutil create "${DMG_FILE}" -volname "${VOL_NAME}"\
 	-size 5G -type SPARSE -fs HFS+ -stretch 10G\
-	-uid 0 -gid 80 -mode 775 -layout NONE -ov 2>&1
+	-uid 0 -gid 80 -mode 775 -layout NONE -ov > /dev/null 2>&1
 
 chmod 777 "${DMG_FILE}"
 
 echo "Mounting disk image..."
-hdiutil attach "${DMG_FILE}" -mountpoint "${TMP_MOUNT_POINT_PATH}"
+hdiutil attach "${DMG_FILE}" -mountpoint "${TMP_MOUNT_POINT_PATH}" > /dev/null 2>&1
 
 echo "Preparing disk image..."
 mdutil -i off "${TMP_MOUNT_POINT_PATH}" > /dev/null 2>&1
@@ -53,7 +53,7 @@ echo "Cloning system (this will take a while)..."
 
 echo "Doing boot things..."
 
-kextcache -l -m "${TMP_MOUNT_POINT_PATH}"/System/Library/Extensions.mkext\
+kextcache -a i386 -N -L -S -m "${TMP_MOUNT_POINT_PATH}"/System/Library/Extensions.mkext\
   "${SOURCE}"/System/Library/Extensions
 
 bless --folder "${TMP_MOUNT_POINT_PATH}"/System/Library/CoreServices\
