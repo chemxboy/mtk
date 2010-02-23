@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Letsgetletsgetletsgetletsget root!
-echo $ROOTPW | sudo -sS
-
 if [[ $USER != "root" ]]; then
     echo "This must be run as root"
     exit 1
