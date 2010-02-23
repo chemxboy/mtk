@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ON_DELAY=20
-OFF_DELAY=20
+OFF_DELAY=70 # this should always be > 60
 LOGFILE=~/Desktop/poweron.command.log
 
 if [[ $USER != "root" ]]; then
