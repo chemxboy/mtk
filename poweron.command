@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 ON_DELAY=20
-OFF_DELAY=70 # this should always be > 60
+OFF_DELAY=120 # this should always be > 60
 LOGFILE=~/Desktop/poweron.command.log
 
 if [[ $USER != "root" ]]; then
-  echo "This must be run as root"
+  echo "This must be run as root" 2>&1
   exit 1
 fi
 
