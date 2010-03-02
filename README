@@ -1,3 +1,14 @@
 ## Welcome to the Mac ToolKit ##
 A collection of system administration and diagnostic tools for OS X
 
+###build_rsync###
+A helper for building the latest rsync, complete with all Mac-specific patches.
+
+###hellyes###
+A stress test which starts a yes process per every core and then generates IO on the boot drive by creating 10k, 100k, 1m and 10m files in the /tmp/_hellyes folder.
+
+###blooper###
+The Boot Looper is another stress test which opens up a bunch of applications and then
+reboots the machine. Very effective when used inside login items. Has two modes of operation:
+- Run as is. This launches the first 5 apps from /Applications
+- Create a folder called "TestApps" on your desktop and drag aliases into it. This will only launch the apps inside this folder.
