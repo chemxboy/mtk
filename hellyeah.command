@@ -4,7 +4,6 @@
 # @author Filipp Lepalaan <filipp@mcare.fi>
 
 MYDIR=/private/tmp/_hellyeah
-
 CORES=$(sysctl hw.logicalcpu_max | cut -d : -f 2 | sed 's/ //')
 
 for (( i = 0; i < ${CORES}; i++ )); do
@@ -14,6 +13,8 @@ done
 if [[ ! -d "${MYDIR}" ]]; then
   mkdir "${MYDIR}"
 fi
+
+trap "killall yes; rm ${MYDIR}; echo Killed; exit 255" SIGINT SIGTERM
 
 while true; do
   for k in 10 100 1000 10000; do
