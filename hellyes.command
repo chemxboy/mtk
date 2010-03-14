@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # hellyeah.command
-# Do some stress testings
+# Do some stress testing
 # @author Filipp Lepalaan <filipp@mcare.fi>
 
 MYDIR=/private/tmp/_hellyeah
@@ -14,7 +14,7 @@ if [[ ! -d "${MYDIR}" ]]; then
   mkdir "${MYDIR}"
 fi
 
-trap "killall yes; rm ${MYDIR}; echo Killed; exit 255" SIGINT SIGTERM
+trap "killall yes; rm ${MYDIR}; echo 'Cleaning up...'; exit 255" SIGINT SIGTERM
 
 while true; do
   for k in 10 100 1000 10000; do
