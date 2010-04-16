@@ -6,7 +6,7 @@ if [[ $USER != "root" ]]; then
   exit 1
 fi
 
-usage="$(basename $0) username password"
+usage="usage: $(basename $0) username password"
 
 if [[ $# -lt 2 ]]; then
   echo $usage 2>&1
@@ -41,9 +41,9 @@ dscl . -delete /users/$username
 # Create local user
 dscl . -create /users/$username UniqueID $new_uid
 dscl . -create /users/$username RealName "$new_rn"
-dscl . -create /users/$username UserShell $new_shell
+dscl . -create /users/$username UserShell "/bin/bash"
 dscl . -create /users/$username GeneratedUID $(uuidgen)
-dscl . -create /users/$username PrimaryGroupID $new_gid
+dscl . -create /users/$username PrimaryGroupID 20
 dscl . -create /users/$username NFSHomeDirectory $newhome
 
 # Give admin perms
@@ -53,4 +53,4 @@ dscl . -append /groups/admin users $username
 dscl . -passwd /users/$username "$password"
 
 # Set correct permissions
-chown -R $username:staff 
+chown -R $username:staff $newhome
