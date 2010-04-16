@@ -17,12 +17,14 @@ username=$1
 password=$2
 
 # First check that user exists
-homedir=$(dscl . read "/users/$username" NFSHomeDirectory | sed 's/.*: //')
+homedir=$(dscl . read "/Users/$username" NFSHomeDirectory | sed 's/.*: //g')
 
 if [[ ! -d $homedir ]]; then
   echo "Invalid user $username" >&2
   exit 1
 fi
+
+realname=$(dscl . read "/Users/$username" RealName | sed 's/.*: //g')
 
 nextid() {
   max_id=$(dscl . -list $1 $2 | awk '{print $2}' | sort -n | tail -n 1)
@@ -30,27 +32,29 @@ nextid() {
   echo $max_id
 }
 
-new_uid=$(nextid /users UniqueID)
+new_uid=$(nextid /Users UniqueID)
 new_gid=$(nextid /groups PrimaryGroupID)
 
 newhome="/Users/$username"
 
 # Delete mobile account
-dscl . -delete /users/$username
+dscl . -delete /Users/$username
 
 # Create local user
-dscl . -create /users/$username UniqueID $new_uid
-dscl . -create /users/$username RealName "$new_rn"
-dscl . -create /users/$username UserShell "/bin/bash"
-dscl . -create /users/$username GeneratedUID $(uuidgen)
-dscl . -create /users/$username PrimaryGroupID 20
-dscl . -create /users/$username NFSHomeDirectory $newhome
+dscl . -create /Users/$username UniqueID $new_uid
+dscl . -create /Users/$username RealName "$realname"
+dscl . -create /Users/$username UserShell "/bin/bash"
+dscl . -create /Users/$username GeneratedUID $(uuidgen)
+dscl . -create /Users/$username PrimaryGroupID 20
+dscl . -create /Users/$username NFSHomeDirectory $newhome
 
 # Give admin perms
 dscl . -append /groups/admin users $username
 
 # Set the password
-dscl . -passwd /users/$username "$password"
+dscl . -passwd /Users/$username "$password"
 
 # Set correct permissions
 chown -R $username:staff $newhome
+
+exit 0
