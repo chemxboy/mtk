@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Convert Mobile account to Local
+# @author Filipp Lepalaan <filipp@mcare.fi>
 
 if [[ $USER != "root" ]]; then
   echo "This tool must be run as root" >&2
@@ -33,7 +34,7 @@ nextid() {
 }
 
 new_uid=$(nextid /Users UniqueID)
-new_gid=$(nextid /groups PrimaryGroupID)
+new_gid=$(nextid /Groups PrimaryGroupID)
 
 newhome="/Users/$username"
 
@@ -49,7 +50,7 @@ dscl . -create /Users/$username PrimaryGroupID 20
 dscl . -create /Users/$username NFSHomeDirectory $newhome
 
 # Give admin perms
-dscl . -append /groups/admin users $username
+dscl . -append /Groups/admin users $username
 
 # Set the password
 dscl . -passwd /Users/$username "$password"
