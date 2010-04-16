@@ -22,6 +22,8 @@ find "$MYDIR/" -exec open {} \;
 trap "killall yes; rm ${MYDIR}; echo 'Cleaning up...'; exit 255" SIGINT
 sleep 10
 
+# Time how long it took to boot up
+#... 
 echo $(date) >> ~/Desktop/blooper.log
 
 #reboot
