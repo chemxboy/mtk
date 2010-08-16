@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # serverbackup.sh
+# @author Filipp Lepalaan <filipp@mac.com>
+# @copyright No (c), Public Domain software
 
 ODPASS=somepass         # Password used to encrypt the OD archive
 CALDATA=/Library/CalendarServer/Documents

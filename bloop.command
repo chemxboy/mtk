@@ -3,7 +3,7 @@
 # Launch applications and reboot the machine
 # @author Filipp Lepalaan <filipp@mcare.fi>
 # @author Vesa Viskari <vesa@mcare.fi>
-# @copyright (c) 2010 Filipp Lepalaan
+# @copyright No (c), Public Domain software
 
 MYDIR="~/Desktop/BlooperApps"
 

@@ -3,6 +3,9 @@
 # Create NetBoot Image from any OS X volume
 # Much of this is borrowed from DeployStudio/sys_builder.sh
 # usage makeboot..sh source destination
+# http://pastebin.com/aJi3AxTe
+# https://www.wiki.ed.ac.uk/display/DSwiki/Automating+the+creation+of+NetBoot+images
+# http://clc.its.psu.edu/Labs/Mac/Resources/blastimageconfig/default.aspx
 
 if [ $USER != "root" ]; then
   echo "This must be run as root"

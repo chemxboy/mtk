@@ -2,6 +2,7 @@
 # hellyeah.command
 # Do some stress testing
 # @author Filipp Lepalaan <filipp@mcare.fi>
+# @copyright No (c), Public Domain software
 
 MYDIR=/private/tmp/_hellyeah
 CORES=$(sysctl hw.logicalcpu_max | cut -d : -f 2 | sed 's/ //')

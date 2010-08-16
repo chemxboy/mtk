@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # build_rsync.sh
 # @author Filipp Lepalaan <filipp@mcare.fi>
+# @copyright No (c), Public Domain software
 # Build the most recent version of rsync
 # with necessary patches.
 # All thanks to Mike Bombich
@@ -41,6 +42,7 @@ cd rsync-${RSYNC_VERSION}
 echo "Building rsync..."
 patch -p1 <patches/fileflags.diff
 patch -p1 <patches/crtimes.diff
+export CFLAGS="-O -g -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5
 ./prepare-source
 ./configure
 make

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Convert Mobile account to Local
 # @author Filipp Lepalaan <filipp@mcare.fi>
+# @copyright No (c), Public Domain software
 
 if [[ $USER != "root" ]]; then
   echo "This tool must be run as root" >&2

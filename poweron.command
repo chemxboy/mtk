@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# @author Filipp Lepalaan <filipp@mac.com>
+# @copyright No (c), Public Domain software
 
 ON_DELAY=20
 OFF_DELAY=120 # this should always be > 60

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash 
 # useradd.sh v1.2
-# (cc) 2006 Filipp Lepalaan <filipp@mac.com>
+# @copyright No (c), Public Domain software
 # Updated to support both Tiger & Leopard <filipp@mac.com>
 # Updated for Leopard by Allan Sanderson <allanbee@mac.com>
 # Included non-interactive password setting - this is a contencious issue for
