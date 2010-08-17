@@ -16,7 +16,15 @@ fi
 SOURCE=$1
 TARGET=$2
 
+# Make sure we're not operating on the boot drive
+if [[ mount | head -n 1 | egrep -q "${SOURCE}|${TARGET}" ]]; then
+  echo "Error: cannot operate on the boot drive" 2>&1
+  exit 1
+fi
+
 TMPFILE="/tmp/$(uuidgen)"
+
+trap "killall dd; rm ${TMPFILE}; echo 'Cleaning up...'; exit 255" SIGINT SIGTERM
 
 # Get size of source
 diskutil info -plist $SOURCE > "${TMPFILE}".plist
@@ -27,16 +35,23 @@ diskutil info -plist $TARGET > $TMPFILE
 TARGET_SIZE=`defaults read $TMPFILE TotalSize`
 rm $TMPFILE
 
-if [[ $TARGET_SIZE < $SOURCE_SIZE ]]; then
-  echo "Warning: target drive is smaller than source!" 2>&1
-fi
-
 if [[ $TARGET_SIZE == $SOURCE_SIZE ]]; then
-  echo "Drives are identical, cloning with dd..."
+  echo "Sizes are identical, cloning with dd..."
   diskutil quiet unmountDisk $SOURCE
   diskutil quiet unmountDisk $TARGET
-  dd bs=16m if="/dev/r${SOURCE}" of="/dev/r${TARGET}" conv=noerror,sync
+  dd bs=16m if="/dev/r${SOURCE}" of="/dev/r${TARGET}" conv=noerror,sync &
+  DD_PID=$!
+  # while dd is running...
+  while [[ ps -ax | egrep -q -m 1 " ${DD_PID} "  ]]; do
+    sleep 1
+    kill -SIGINFO $DD_PID
+  done
   diskutil quiet mountDisk $SOURCE
   diskutil quiet mountDisk $TARGET
   exit 0
 fi
+
+if [[ $TARGET_SIZE < $SOURCE_SIZE ]]; then
+  echo "Warning: target drive is smaller than source!" 2>&1
+fi
+
