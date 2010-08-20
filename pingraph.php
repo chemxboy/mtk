@@ -14,13 +14,16 @@ $data = array();
 $columns = array();
 $max_ping = 0;
 $min_ping = 0;
+$host = 'ping';
 
 while (!feof($ifh)) {
   $line = fgets($ifh, 4096);
-  preg_match('/from (\d+\.\d+\.\d+\.\d+) icmp_seq=(\d+) ttl=\d+ time=(\d+\.\d+)/', $line, $m);
+  preg_match('/from (\d+\.\d+\.\d+\.\d+): icmp_seq=(\d+) ttl=\d+ time=(\d+\.\d+)/', $line, $m);
   if (!empty($m)) {
+    print_r($m);
     $ts += $interval;
-    $time = $m[2];
+    $host = $m[1];
+    $time = $m[3];
     if ($time > $max_ping) {
       $max_ping = $time;
     }
@@ -48,7 +51,7 @@ $as =<<<EOT
   	set theData to {{$data}}
   	set theSlide to (slide 1) of first slideshow
   	tell theSlide
-  		add chart row names {{$columns}} column names {"ping"} ¬
+  		add chart row names {{$columns}} column names {"$host"} ¬
   			data theData type "line_2d" group by "column"
   	end tell
   end tell
