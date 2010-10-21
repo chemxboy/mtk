@@ -34,14 +34,22 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-echo "Extracting rsync..."
+echo "Extracting..."
 tar -zxvf rsync-${RSYNC_VERSION}.tar.gz
 tar -zxvf rsync-patches-${RSYNC_VERSION}.tar.gz
 cd rsync-${RSYNC_VERSION}
+curl -o patches/hfs_compression.diff 'http://www.bombich.com/software/opensource/rsync_3.0.7-hfs_compression_20100701.diff'
+curl -o patches/crtimes-64bit.diff 'https://bugzilla.samba.org/attachment.cgi?id=5288'
+curl -o patches/crtimes-hfs+.diff 'https://bugzilla.samba.org/attachment.cgi?id=5966'
 
-echo "Building rsync..."
+echo "Applying patches..."
 patch -p1 <patches/fileflags.diff
 patch -p1 <patches/crtimes.diff
+patch -p1 <patches/crtimes-64bit.diff
+patch -p1 <patches/crtimes-hfs+.diff
+patch -p1 <patches/hfs_compression.diff
+
+echo "Building..."
 export CFLAGS="-O -g -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5
 ./prepare-source
 ./configure
