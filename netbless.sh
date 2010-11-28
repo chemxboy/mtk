@@ -33,6 +33,7 @@ do
     --booter tftp://${SERVER_IP}/${IMG}/${MACHINE}/booter \
     --kernel tftp://${SERVER_IP}/${IMG}/${MACHINE}/mach.macosx \
     --options "rp=nfs:${SERVER_IP}:${SERVER_PATH}:/${IMG}/NetInstall.dmg"
+    --nextonly
     echo "NetBoot set"
     exit 0
   fi
