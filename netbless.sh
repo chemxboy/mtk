@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# netbless.sh
+# Select NetBoot set from server
+# @author Filipp Lepalaan <filipp@mcare.fi>
+# @package mtk
 
 SERVER=sw.mcare.fi
 SERVER_PATH="/data/nb"
@@ -13,7 +17,11 @@ SERVER_IP=$(dig +short ${SERVER})
 ME=$(/usr/sbin/sysctl -n hw.model)
 MACHINE=$(sysctl -n hw.machine)
 
-if [[ -z ${ME} ]]; then
+if [[ $MACHINE == "x86_64" ]]; then
+  MACHINE="i386/${MACHINE}"
+fi
+
+if [[ -z $ME ]]; then
   echo "Error: could not determine hardware model" 2>&1
   exit 1
 fi
@@ -32,9 +40,9 @@ do
     /usr/sbin/bless --netboot \
     --booter tftp://${SERVER_IP}/${IMG}/${MACHINE}/booter \
     --kernel tftp://${SERVER_IP}/${IMG}/${MACHINE}/mach.macosx \
-    --options "rp=nfs:${SERVER_IP}:${SERVER_PATH}:/${IMG}/NetInstall.dmg"
+    --options "rp=nfs:${SERVER_IP}:${SERVER_PATH}:/${IMG}/NetInstall.dmg" \
     --nextonly
-    echo "NetBoot set"
+    echo "NetBoot set to ${ME}.nbi"
     exit 0
   fi
 done
