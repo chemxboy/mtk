@@ -4,15 +4,19 @@
 # @author Filipp Lepalaan <filipp@mcare.fi>
 # @package mtk
 
-SERVER=sw.mcare.fi
-SERVER_PATH="/data/nb"
-
 if [[ ${USER} != "root" ]]; then
   echo "This must be run as root" 2>&1
   exit 1
 fi
 
-SERVER_IP=$(dig +short ${SERVER})
+if [[ $1 == "help" ]]; then
+  echo "Usage: $(basename $0) [nbi] [url] [nbi_path]" 2>&1
+  exit 0
+fi
+
+SERVER_PATH=${3:-"/data/nb"}
+SERVER=${2:-"http://sw.mcare.fi/mh/"}
+SERVER_IP=$(/usr/bin/dig +short ${SERVER})
 
 ME=$(/usr/sbin/sysctl -n hw.model)
 MACHINE=$(sysctl -n hw.machine)
@@ -26,10 +30,10 @@ if [[ -z $ME ]]; then
   exit 1
 fi
 
-IMAGES=$(/usr/bin/curl -s http://${SERVER}/mh/)
+IMAGES=$(/usr/bin/curl -s ${SERVER})
 
-if [[ $1 == "help" ]]; then
-  echo -e "Usage: $(basename $0) [${IMAGES}]" 2>&1
+if [[ $1 == "list" ]]; then
+  echo -e "Available images: [${IMAGES}]" 2>&1
   exit 0
 fi
 
@@ -41,8 +45,8 @@ do
     --booter tftp://${SERVER_IP}/${IMG}/${MACHINE}/booter \
     --kernel tftp://${SERVER_IP}/${IMG}/${MACHINE}/mach.macosx \
     --options "rp=nfs:${SERVER_IP}:${SERVER_PATH}:/${IMG}/NetInstall.dmg" \
-    --nextonly
-    echo "NetBoot set to ${ME}.nbi"
+    --nextonly \
+    echo "Startup volume set to ${ME}.nbi"
     exit 0
   fi
 done

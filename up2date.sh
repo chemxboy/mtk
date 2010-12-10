@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # up2date.sh
-# Run software update until there are no more
-# updates available.
+# Run software update until there are no more updates available.
 # @author Filipp Lepalaan
 # @package mtk
 
