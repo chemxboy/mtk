@@ -15,10 +15,10 @@ if [[ $1 == "help" ]]; then
 fi
 
 SERVER_PATH=${3:-"/data/nb"}
-SERVER=${2:-"http://sw.mcare.fi/mh/"}
+SERVER=${2:-"sw.mcare.fi"}
 SERVER_IP=$(/usr/bin/dig +short ${SERVER})
 
-ME=$(/usr/sbin/sysctl -n hw.model)
+ME=${1:-$(/usr/sbin/sysctl -n hw.model)}
 MACHINE=$(sysctl -n hw.machine)
 
 if [[ $MACHINE == "x86_64" ]]; then
@@ -30,7 +30,7 @@ if [[ -z $ME ]]; then
   exit 1
 fi
 
-IMAGES=$(/usr/bin/curl -s ${SERVER})
+IMAGES=$(/usr/bin/curl -s http://${SERVER}/mh/)
 
 if [[ $1 == "list" ]]; then
   echo -e "Available images: [${IMAGES}]" 2>&1
@@ -45,8 +45,8 @@ do
     --booter tftp://${SERVER_IP}/${IMG}/${MACHINE}/booter \
     --kernel tftp://${SERVER_IP}/${IMG}/${MACHINE}/mach.macosx \
     --options "rp=nfs:${SERVER_IP}:${SERVER_PATH}:/${IMG}/NetInstall.dmg" \
-    --nextonly \
-    echo "Startup volume set to ${ME}.nbi"
+    --nextonly
+    echo "Startup volume set to ${ME}"
     exit 0
   fi
 done
