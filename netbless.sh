@@ -14,26 +14,27 @@ if [[ $1 == "help" ]]; then
   exit 0
 fi
 
-SERVER_PATH=${3:-"/data/nb"}
 SERVER=${2:-"sw.mcare.fi"}
+SERVER_PATH=${3:-"/data/nb"}
 SERVER_IP=$(/usr/bin/dig +short ${SERVER})
 
-ME=${1:-$(/usr/sbin/sysctl -n hw.model)}
 MACHINE=$(sysctl -n hw.machine)
 
 if [[ $MACHINE == "x86_64" ]]; then
   MACHINE="i386/${MACHINE}"
 fi
 
+ME=${1:-$(/usr/sbin/sysctl -n hw.model)}
+
 if [[ -z $ME ]]; then
   echo "Error: could not determine hardware model" 2>&1
   exit 1
 fi
 
-IMAGES=$(/usr/bin/curl -s http://${SERVER}/mh/)
+IMAGES=$(/usr/bin/curl -s "http://${SERVER}/mh/")
 
 if [[ $1 == "list" ]]; then
-  echo -e "Available images: [${IMAGES}]" 2>&1
+  echo -e "Available images: ${IMAGES}" 2>&1
   exit 0
 fi
 
