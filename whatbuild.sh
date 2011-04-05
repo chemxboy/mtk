@@ -1,10 +1,12 @@
 #! /usr/bin/env bash
 # whatbuild.sh
 # @description determine build number of OS on target volume
-# @package mtk
+# The most accurate place to read this would be inside BaseSystem.pkg, but
+# that's a hell of a lot of work and in my tests they seem to be the same.
 # @author Filipp Lepalaan <filipp@mcare.fi>
+# @package mtk
 
-USAGE="$(basename $0) [volume=/]"
+USAGE="$(basename $0) [volume | /]"
 VOLUME=${1:-"/"}
 PLIST="${VOLUME}/System/Library/CoreServices/SystemVersion.plist"
 
