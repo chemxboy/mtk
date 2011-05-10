@@ -4,7 +4,7 @@
 # @author Filipp Lepalaan <filipp@mcare.fi>
 # @package mtk
 
-if [[ ${USER} != "root" ]]; then
+if [[ ${USER} != "root" && -z ${DS_USER_LOGIN} ]]; then
   echo "This must be run as root" 2>&1
   exit 1
 fi
@@ -26,7 +26,7 @@ fi
 
 ME=${1:-$(/usr/sbin/sysctl -n hw.model)}
 
-if [[ -z $ME ]]; then
+if [[ -z ${ME} ]]; then
   echo "Error: could not determine hardware model" 2>&1
   exit 1
 fi
