@@ -36,6 +36,10 @@ EOT
   /usr/bin/logger "$(basename $0) loaded"
   exit 0
   fi
+  # wait for the GUI to come up...
+  while [[ ! /bin/ps aux | /usr/bin/grep loginwindow | /usr/bin/grep -qv grep ]]; do
+    sleep 5
+  done
   /usr/bin/open /var/log/system.log
   /usr/sbin/softwareupdate -ia && /sbin/reboot
   exit 0
