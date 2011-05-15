@@ -10,8 +10,12 @@ if [[ $(id -u) != 0 ]]; then
 fi
 
 ME=$0
-LOGFILE=/var/log/up2date.log
-PLIST=/Library/LaunchAgents/com.unflyingobject.mtk.up2date.plist
+MAILTO="filipp@mcare.fi"
+LOGFILE=/Library/Logs/up2date.log
+PLIST=/Library/LaunchDaemons/com.unflyingobject.mtk.up2date.plist
+
+# disable automatic checking to avoid possible race condition
+/usr/sbin/softwareupdate --schedule off
 
 # updates available...
 if /usr/sbin/softwareupdate -l 2>&1 | grep -q 'found the following new'
@@ -34,19 +38,25 @@ then
 </plist>
 EOT
   /bin/launchctl load -w "${PLIST}"
-  /usr/bin/logger "$(basename $0) loaded"
+  echo "$(basename $0) loaded" > "${LOGFILE}"
   exit 0
   fi
   # wait for the GUI to come up...
 #  while [[ ! (/bin/ps aux | /usr/bin/grep loginwindow | /usr/bin/grep -qv grep) ]]; do
 #    sleep 5
 #  done
-  /usr/bin/open "${LOGFILE}"
+#  /usr/bin/open "${LOGFILE}"
   /usr/sbin/softwareupdate -ia > "${LOGFILE}" 2>&1 && /sbin/reboot
   exit 0
 fi
 
 # no more updates available
+/usr/sbin/softwareupdate --schedule on
 /bin/launchctl unload -w "${PLIST}" && rm "${PLIST}"
 /usr/bin/logger "$(basename $0) finished, script unloaded. Have a nice day."
+
+if [[ ! -z "${MAILTO}" ]]; then
+  cat "${LOGFILE} | mail -s up2date ${MAILTO}"
+fi
+
 exit 0
