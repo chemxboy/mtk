@@ -10,7 +10,8 @@ if [[ $(id -u) != 0 ]]; then
 fi
 
 ME=$0
-PLIST=/Library/LaunchDaemons/com.unflyingobject.mtk.up2date.plist
+LOGFILE=/var/log/up2date.log
+PLIST=/Library/LaunchAgents/com.unflyingobject.mtk.up2date.plist
 
 # updates available...
 if /usr/sbin/softwareupdate -l 2>&1 | grep -q 'found the following new'
@@ -37,11 +38,11 @@ EOT
   exit 0
   fi
   # wait for the GUI to come up...
-  while [[ ! /bin/ps aux | /usr/bin/grep loginwindow | /usr/bin/grep -qv grep ]]; do
-    sleep 5
-  done
-  /usr/bin/open /var/log/system.log
-  /usr/sbin/softwareupdate -ia && /sbin/reboot
+#  while [[ ! (/bin/ps aux | /usr/bin/grep loginwindow | /usr/bin/grep -qv grep) ]]; do
+#    sleep 5
+#  done
+  /usr/bin/open "${LOGFILE}"
+  /usr/sbin/softwareupdate -ia > "${LOGFILE}" 2>&1 && /sbin/reboot
   exit 0
 fi
 
