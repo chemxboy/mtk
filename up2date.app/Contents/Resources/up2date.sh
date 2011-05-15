@@ -46,7 +46,7 @@ EOT
 #    sleep 5
 #  done
 #  /usr/bin/open "${LOGFILE}"
-  /usr/sbin/softwareupdate -ia > "${LOGFILE}" 2>&1 && /sbin/reboot
+  /usr/sbin/softwareupdate -ia >> "${LOGFILE}" 2>&1 && /sbin/reboot
   exit 0
 fi
 
