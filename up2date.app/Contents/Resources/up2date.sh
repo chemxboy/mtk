@@ -10,17 +10,21 @@ if [[ $(id -u) != 0 ]]; then
 fi
 
 ME=$0
-MAILTO="filipp@mcare.fi"
+MAILTO="filipp@mcare.macpalvelin.com"
 LOGFILE=/Library/Logs/up2date.log
 PLIST=/Library/LaunchDaemons/com.unflyingobject.mtk.up2date.plist
 
+echo "up2date launched..." >> "${LOGFILE}"
+
 # disable automatic checking to avoid possible race condition
 /usr/sbin/softwareupdate --schedule off
+echo "scheduling disabled, checking for updates..." >> "${LOGFILE}"
 
 # updates available...
 if /usr/sbin/softwareupdate -l 2>&1 | grep -q 'found the following new'
 then
   if [[ ! -e "${PLIST}" ]]; then
+    echo "installing launchd item..." >> "${LOGFILE}"
     cat > "${PLIST}" <<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -38,25 +42,29 @@ then
 </plist>
 EOT
   /bin/launchctl load -w "${PLIST}"
-  echo "$(basename $0) loaded" > "${LOGFILE}"
+  echo "up2date loaded..." >> "${LOGFILE}"
+  sleep 10
   exit 0
-  fi
-  # wait for the GUI to come up...
-#  while [[ ! (/bin/ps aux | /usr/bin/grep loginwindow | /usr/bin/grep -qv grep) ]]; do
-#    sleep 5
-#  done
-#  /usr/bin/open "${LOGFILE}"
-  /usr/sbin/softwareupdate -ia >> "${LOGFILE}" 2>&1 && /sbin/reboot
+fi
+  echo "more updates available, installing..." >> "${LOGFILE}"
+  # this is the part that should be looped until there are no more updates
+  /usr/sbin/softwareupdate -ia >> "${LOGFILE}" 2>&1
+  echo "updates installed, rebooting..." >> "${LOGFILE}"
+  /sbin/shutdown -r now
   exit 0
 fi
 
 # no more updates available
+echo "all updates installed, cleaning up..." >> "${LOGFILE}"
 /usr/sbin/softwareupdate --schedule on
-/bin/launchctl unload -w "${PLIST}" && rm "${PLIST}"
-/usr/bin/logger "$(basename $0) finished, script unloaded. Have a nice day."
 
 if [[ ! -z "${MAILTO}" ]]; then
-  cat "${LOGFILE} | mail -s up2date ${MAILTO}"
+  cat "${LOGFILE} | /usr/bin/mail -s up2date ${MAILTO}"
 fi
+
+echo "up2date finished, script unloaded. Have a nice day." >> "${LOGFILE}"
+/usr/bin/say "$(/usr/sbin/system_profiler SPHardwareDataType | awk '/Serial Number/ {print $4}') up to date!"
+
+rm "${PLIST}"
 
 exit 0

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# clone all partitions of a drive
-# and try not to waste space
+# clone all partitions of a drive and try not to waste space
 # @author Filipp Lepalaan <filipp@mcare.fi>
+# @package mtk
 
 if [[ $USER != "root" ]]; then
   echo "Insufficient privileges!" 2>&1
@@ -27,27 +27,27 @@ TMPFILE="/tmp/$(uuidgen)"
 trap "killall dd; rm ${TMPFILE}; echo 'Cleaning up...'; exit 255" SIGINT SIGTERM
 
 # Get size of source
-diskutil info -plist $SOURCE > "${TMPFILE}".plist
+/usr/sbin/diskutil info -plist $SOURCE > "${TMPFILE}".plist
 SOURCE_SIZE=`defaults read $TMPFILE TotalSize`
 
 # Get size of destination
-diskutil info -plist $TARGET > $TMPFILE
+/usr/sbin/diskutil info -plist $TARGET > $TMPFILE
 TARGET_SIZE=`defaults read $TMPFILE TotalSize`
 rm $TMPFILE
 
 if [[ $TARGET_SIZE == $SOURCE_SIZE ]]; then
   echo "Sizes are identical, cloning with dd..."
-  diskutil quiet unmountDisk $SOURCE
-  diskutil quiet unmountDisk $TARGET
-  dd bs=16m if="/dev/r${SOURCE}" of="/dev/r${TARGET}" conv=noerror,sync &
+  /usr/sbin/diskutil quiet unmountDisk $SOURCE
+  /usr/sbin/diskutil quiet unmountDisk $TARGET
+  /bin/dd bs=16m if="/dev/r${SOURCE}" of="/dev/r${TARGET}" conv=noerror,sync &
   DD_PID=$!
   # while dd is running...
   while [[ ps -ax | egrep -q -m 1 " ${DD_PID} "  ]]; do
     sleep 1
-    kill -SIGINFO $DD_PID
+    /bin/kill -SIGINFO $DD_PID
   done
-  diskutil quiet mountDisk $SOURCE
-  diskutil quiet mountDisk $TARGET
+  /usr/sbin/diskutil quiet mountDisk $SOURCE
+  /usr/sbin/diskutil quiet mountDisk $TARGET
   exit 0
 fi
 
