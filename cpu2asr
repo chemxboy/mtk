@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# cpu2asr
+# Turn CPU bundled discs into ASR-ready DMG
+# @author Filipp Lepalaan <filipp@mcare.fi>
+# @package mtk
+
+if [[ $(id -u) != 0 ]]; then
+  echo "This tool must be roon as root" 2>&1
+  exit 1
+fi
+
+if [[ $# -lt 3 ]]; then
+  echo "usage: cpu2asr disc1 disc2 image" 2>&1
+  exit 1
+fi
+
+TARGET_SIZE=30g
+TARGET_IMAGE=""
+TARGET_MP=""
+
+ASR_TARGET=$3
+SHADOW=/Shadow
+SPARSE_MP="/Volumes/${ASR_TARGET}"
+
+echo "Creating target image..."
+
+/usr/bin/hdiutil create -size $TARGET_SIZE \
+	-type SPARSE -fs HFS+J -volname "${ASR_TARGET}" \
+	-uid 0 -gid 80 -mode 0775 -attach "${ASR_TARGET}"
+
+#/usr/bin/hdiutil mount "./${ASR_TARGET}.sparseimage" -mountpoint "${SPARSE_MP}"
+/usr/sbin/vsdbutil -a "${SPARSE_MP}"
+/usr/sbin/diskutil enableOwnership "${SPARSE_MP}"
+
+echo "Installing OS..."
+
+DISC1="/Volumes/cpu2asr_disc1"
+/usr/bin/hdiutil mount "$1" -mountpoint "${DISC1}" -shadow "$SHADOW" -nobrowse
+PACKAGE="${DISC1}/System/Installation/Packages/OSInstall.mpkg"
+
+if [[ $(/usr/bin/file -b "$PACKAGE") == "xar archive version 1, SHA-1 checksum" ]]; then
+  echo "Patching OS installer..." 2>&1
+  DIR="$(dirname $PACKAGE)"
+  /usr/bin/xar -xf "$PACKAGE"
+  /usr/bin/sed -i "" "s/return false/return true/g" "./Distribution"
+  /usr/bin/xar -cf "$PACKAGE" "./Resources" "./Distribution"
+  /bin/rm -r ./Resources ./Distribution
+fi
+
+/usr/sbin/installer -pkg  "${PACKAGE}" -target "${SPARSE_MP}"
+/usr/bin/hdiutil eject "${DISC1}"
+/bin/rm "${SHADOW}"
+
+echo "Installing Apps..."
+DISC2="/Volumes/cpu2asr_disc2"
+/usr/bin/hdiutil mount "$2" -mountpoint "${DISC2}" -shadow "$SHADOW" -nobrowse
+
+/usr/bin/sed -i "" "s/return false/return true/g" \
+	"${DISC2}/Install Bundled Software.mpkg/Contents/Install Bundled Software.dist"
+
+/usr/sbin/installer -pkg "${DISC2}/Install Bundled Software.mpkg" -target "${SPARSE_MP}"
+# run fsck..
+/usr/bin/hdiutil eject "${DISC2}"
+
+# Install additional packages...
+
+echo "Creating final image..."
+/usr/bin/hdiutil create -srcfolder "${SPARSE_MP}" "asr.${ASR_TARGET}.dmg"
+/usr/bin/hdiutil eject "${SPARSE_MP}"
+
+/usr/sbin/asr imagescan --source "asr.${ASR_TARGET}.dmg" \
+	--nostream --allowfragmentedcatalog
+/bin/rm "${SHADOW}" "${ASR_TARGET}.sparseimage"
+
+echo "All done, have a nice day"
+exit 0
