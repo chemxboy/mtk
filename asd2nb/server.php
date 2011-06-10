@@ -8,17 +8,17 @@
    * @package mtk
    */
    
+  $imgdir = '/data/nb/asd'; // edit this to where your NBI's are kept
+  
+  require "plist.php";
+  
   header('Content-Type: text/plain');
-
+  
   if (!isset($_REQUEST['m'])) {
    exit("Sorry, have to know who you are first...");
   }
-
-  $imgdir = '/data/nb/asd'; // edit this
-
+  
   $model = $_REQUEST['m'];
-
-  require "plist.php";
 
   foreach(glob("${imgdir}/*.nbi") as $nbi)
   {

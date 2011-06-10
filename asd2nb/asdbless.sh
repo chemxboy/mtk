@@ -6,13 +6,8 @@
 
 SERVER_IP=192.168.1.10                                    # The IP of the NetBoot server
 SERVER_URL="http://example.com/mtk/asd2nb/server.php"     # URL of the server-side script
-NBI_PATH=/data/nb                                         # Path to the ASD image repository
-ASD_ROOT=/asd                                             # 
-
-if [[ ! -d "${NBI_PATH}" ]]; then
-  echo "Path ${NBI_PATH} does not exist" 2>&1
-  exit 1
-fi
+NBI_PATH="/data/nb"                                       # Path to the ASD image repository
+ASD_ROOT="/asd"                                           # 
 
 MODEL=$(/usr/sbin/sysctl -n hw.model)
 MACHINE=$(/usr/sbin/sysctl -n hw.machine)
@@ -26,11 +21,17 @@ fi
 ASD=$(echo $RESULT | awk 'BEGIN { FS = "/" } ; { print $1 }')
 DMG=$(echo $RESULT | awk 'BEGIN { FS = "/" } ; { print $2 }')
 
-/usr/sbin/bless --netboot \
-    --booter tftp://${SERVER_IP}${ASD_ROOT}/${ASD}/${MACHINE}/booter \
-    --kernel tftp://${SERVER_IP}${ASD_ROOT}/${ASD}/${MACHINE}/mach.macosx \
-    --options "rp=nfs:${SERVER_IP}:${NBI_PATH}:${ASD_ROOT}/${RESULT}" \
-    --nextonly
+if [[ $1 != "efi" ]]; then
+  /usr/sbin/bless --netboot \
+      --booter tftp://${SERVER_IP}${ASD_ROOT}/${ASD}/${MACHINE}/booter \
+      --kernel tftp://${SERVER_IP}${ASD_ROOT}/${ASD}/${MACHINE}/mach.macosx \
+      --options "rp=nfs:${SERVER_IP}:${NBI_PATH}:${ASD_ROOT}/${RESULT}" \
+      --nextonly
+else
+  /usr/sbin/bless --netboot \
+      --booter tftp://${SERVER_IP}${ASD_ROOT}/${ASD}/efi/boot.efi \
+      --nextonly
+fi
 
 echo "Boot volume set to ${ASD}"
 exit 0
